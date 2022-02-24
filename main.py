@@ -1,6 +1,8 @@
 """
 Space Snakes: The Game
 """
+import random
+
 import arcade
 
 # Constants
@@ -10,6 +12,8 @@ SCREEN_TITLE = "SPACE SNAKES: THE GAME"
 SCALING_SNAKE_SPRITE = 0.5
 SNAKE_MOVEMENT_SPEED = 5
 ASTERIOD_SCALING = 0.2
+GRAVITY = 1
+
 
 class MyGame(arcade.Window):
     """
@@ -20,7 +24,7 @@ class MyGame(arcade.Window):
         # Call the parent class and setup the window
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
-        # self.scene = None
+        self.scene = None
 
         # These are 'lists' that keep track of our sprites. Each sprite should
         # go into a list.
@@ -28,7 +32,7 @@ class MyGame(arcade.Window):
         self.snake_sprite = None
 
         # Our physics engine
-        # self.physics_engine = None
+        self.physics_engine = None
 
         # sets the background of the game window
         arcade.set_background_color(arcade.csscolor.BLACK)
@@ -36,7 +40,7 @@ class MyGame(arcade.Window):
 
     def setup(self):
         """set up the gaem here. Call this function to restart the game."""
-        # self.scene = arcade.Scene()
+        self.scene = arcade.Scene()
 
         self.snake_list = arcade.SpriteList()
 
@@ -47,16 +51,16 @@ class MyGame(arcade.Window):
 
         # Create the ground
         # This shows using a loop to place multiple sprites horizontally
-        """for x in range(0, 1250, 64):
-            wall = arcade.Sprite(":resources:images/tiles/grassMid.png", ASTERIOD_SCALING)
-            wall.center_x = x
-            wall.center_y = 32
-            self.scene.add_sprite("Walls", wall)"""
+        for _ in range(10):
+            meteor = arcade.Sprite(":resources:images/space_shooter/meteorGrey_big4.png", ASTERIOD_SCALING)
+            meteor.center_x = random.randint(10, 990)
+            meteor.center_y = random.randint(10, 640)
+            self.scene.add_sprite("Meteors", meteor)
 
         # Create the 'physics engine'
-        """self.physics_engine = arcade.PhysicsEngineSimple(
-            self.snake_sprite, self.scene.get_sprite_list("Walls"),
-        )"""
+        self.physics_engine = arcade.PhysicsEngineSimple(
+            self.snake_sprite, self.scene.get_sprite_list("Meteors"),
+        )
         pass
 
     def on_draw(self):
@@ -64,6 +68,7 @@ class MyGame(arcade.Window):
         arcade.start_render()
 
         # Code to draw the screen goes here
+        self.scene.draw()
         self.snake_list.draw()
         pass
 
@@ -71,7 +76,8 @@ class MyGame(arcade.Window):
         """Movement and game logic"""
 
         # Move the player with the physics engine
-        #self.physics_engine.update()
+        self.physics_engine.update()
+        self.scene.get_sprite_list("Meteors").change_y = 2
 
 
     def on_key_press(self, key, modifiers):
